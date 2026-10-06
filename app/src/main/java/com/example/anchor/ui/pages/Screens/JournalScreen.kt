@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -69,7 +68,7 @@ fun JournalScreen(
             FloatingActionButton(
                 onClick = { showAddSheet = true },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape,
                 modifier = Modifier.size(64.dp)
             ) {
@@ -106,7 +105,7 @@ fun JournalScreen(
             Text(
                 text = "${uiState.journalList.size} entries this week",
                 fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 modifier = Modifier.padding(start = 12.dp, bottom = 16.dp)
             )
 
@@ -117,7 +116,7 @@ fun JournalScreen(
                 ) {
                     Text(
                         text = "No entries yet! Tap the + button to add one.",
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                 }
             } else {
@@ -126,7 +125,11 @@ fun JournalScreen(
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
                     itemsIndexed(uiState.journalList, key = { _, entry -> entry.id }) { index, entry ->
-                        JournalEntryCard(entry = entry, isHighlighted = index == 0, OnDelete = { viewModel.deleteJournalEntry(entry) })
+                        JournalEntryCard(
+                            entry = entry,
+                            isHighlighted = index == 0,
+                            OnDelete = { viewModel.deleteJournalEntry(entry) }
+                        )
                     }
                 }
             }
@@ -145,17 +148,14 @@ fun JournalScreen(
 }
 
 @Composable
-fun JournalEntryCard(entry: JournalEntity,
-                     isHighlighted: Boolean,
-                     OnDelete:()-> Unit) {
-    val cardBackground =Color(0xFFFBF0EA)
-    val titleColor =Color(0xFF5C1E0A)
-    val textColor = Color(0xFF6E2D18)
-    val iconTint =Color(0xFF5C1E0A)
-    
+fun JournalEntryCard(
+    entry: JournalEntity,
+    isHighlighted: Boolean,
+    OnDelete: () -> Unit
+) {
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = cardBackground),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -168,7 +168,7 @@ fun JournalEntryCard(entry: JournalEntity,
                     Icon(
                         imageVector = entry.mood.icon,
                         contentDescription = entry.mood.label,
-                        tint = iconTint,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -176,16 +176,16 @@ fun JournalEntryCard(entry: JournalEntity,
                         text = entry.timestamp.toRelativeFormattedString(),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = titleColor
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
-                Row() {
+                Row {
                     IconButton(onClick = OnDelete) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete Journal Entry",
                             modifier = Modifier.size(25.dp),
-                            tint= iconTint
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -195,7 +195,7 @@ fun JournalEntryCard(entry: JournalEntity,
                 text = entry.notes,
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
-                color = textColor,
+                color = MaterialTheme.colorScheme.onSurface,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -213,8 +213,8 @@ fun AddJournalBottomSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF2C2C2C),
-        contentColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         dragHandle = {
             BottomSheetDefaults.DragHandle(
                 color = MaterialTheme.colorScheme.primary
@@ -231,13 +231,13 @@ fun AddJournalBottomSheet(
                 text = "New Reflection",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = "How are you feeling?",
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Row(
@@ -248,7 +248,7 @@ fun AddJournalBottomSheet(
                     FilterChip(
                         selected = (selectedMood == mood),
                         onClick = { selectedMood = mood },
-                        label = { Text(mood.label, color = Color.White) },
+                        label = { Text(mood.label) },
                         leadingIcon = {
                             Icon(
                                 imageVector = mood.icon,
@@ -263,12 +263,14 @@ fun AddJournalBottomSheet(
             OutlinedTextField(
                 value = noteText,
                 onValueChange = { noteText = it },
-                placeholder = { Text("Write your thoughts...", color = Color.Gray) },
+                placeholder = { Text("Write your thoughts...") },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -283,7 +285,7 @@ fun AddJournalBottomSheet(
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel", color = Color.Gray)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
@@ -292,19 +294,23 @@ fun AddJournalBottomSheet(
                             onSave(noteText, selectedMood)
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD85834)),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
                     enabled = noteText.isNotBlank()
                 ) {
-                    Text("Save", color = Color.White)
+                    Text("Save")
                 }
             }
         }
     }
 }
+
 @Preview
 @Composable
-fun JournalScreenPreview(){
+fun JournalScreenPreview() {
     AnchorTheme(darkTheme = true) {
-        JournalEntryCard(entry =JournalEntity(notes = "This is a test", timestamp = LocalDateTime.of(2026, 9, 2, 14, 0), mood = Mood.SUNNY), isHighlighted = true, OnDelete = {})
+        JournalScreen()
     }
 }

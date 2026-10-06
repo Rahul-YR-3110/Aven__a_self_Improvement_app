@@ -1,49 +1,58 @@
-package com.example.anchor.ui.theme // TODO: change to your app's package
+package com.example.anchor.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ---------- Light theme ----------
-val LightPrimary = Color(0xFF1F5F8B)
+// ---------- Light Theme Palette ----------
+// Modern, crisp, vibrant light palette inspired by clean aesthetic interfaces
+val LightPrimary = Color(0xFF2563EB)              // Vibrant Electric Blue
 val LightOnPrimary = Color(0xFFFFFFFF)
-val LightPrimaryContainer = Color(0xFFD3E6F5)
-val LightOnPrimaryContainer = Color(0xFF0B2E45)
+val LightPrimaryContainer = Color(0xFFDBEAFE)     // Soft Sky Blue Tint
+val LightOnPrimaryContainer = Color(0xFF1E40AF)   // Deep Royal Blue Text/Icon
 
-val LightSecondary = Color(0xFF4F6D7A)
+val LightSecondary = Color(0xFF7C3AED)            // Electric Violet/Indigo accent
 val LightOnSecondary = Color(0xFFFFFFFF)
+val LightSecondaryContainer = Color(0xFFEDE9FE)   // Soft Lavender Tint
+val LightOnSecondaryContainer = Color(0xFF5B21B6) // Deep Indigo Text/Icon
 
-val LightTertiary = Color(0xFFC8843B)
+val LightTertiary = Color(0xFFD97706)             // Warm Amber accent
 val LightOnTertiary = Color(0xFFFFFFFF)
+val LightTertiaryContainer = Color(0xFFFEF3C7)    // Soft Amber Tint
+val LightOnTertiaryContainer = Color(0xFF92400E)  // Deep Warm Amber Text/Icon
 
-val LightBackground = Color(0xFFF2FAFD)
-val LightOnBackground = Color(0xFF14202A)
-val LightSurface = Color(0xFFE1E1E1)
-val LightOnSurface = Color(0xFF14202A)
-val LightSurfaceVariant = Color(0xFFE3EAEE)
-val LightOnSurfaceVariant = Color(0xFF3F4E57)
-val LightOutline = Color(0xFF71828C)
+val LightBackground = Color(0xFFF8FAFC)           // Fresh crisp slate off-white
+val LightOnBackground = Color(0xFF0F172A)         // Deep slate text for high contrast
+val LightSurface = Color(0xFFFFFFFF)              // Pure white cards for crisp surface contrast
+val LightOnSurface = Color(0xFF0F172A)
+val LightSurfaceVariant = Color(0xFFF1F5F9)       // Elevated subtle card background
+val LightOnSurfaceVariant = Color(0xFF475569)     // Muted secondary slate text
+val LightOutline = Color(0xFFE2E8F0)              // Subtle border tint
 
-val LightError = Color(0xFFB3261E)
+val LightError = Color(0xFFEF4444)
 val LightOnError = Color(0xFFFFFFFF)
 
-// ---------- Dark theme ----------
-val DarkPrimary = Color(0xFF8FC3EA)
-val DarkOnPrimary = Color(0xFF06283F)
-val DarkPrimaryContainer = Color(0xFF174866)
-val DarkOnPrimaryContainer = Color(0xFFD3E6F5)
+// ---------- Dark Theme Palette ----------
+val DarkPrimary = Color(0xFF60A5FA)               // Soft Sky Blue
+val DarkOnPrimary = Color(0xFF0F172A)
+val DarkPrimaryContainer = Color(0xFF1E3A8A)      // Deep Blue Container
+val DarkOnPrimaryContainer = Color(0xFFBFDBFE)
 
-val DarkSecondary = Color(0xFFB3CBD8)
-val DarkOnSecondary = Color(0xFF1B313C)
+val DarkSecondary = Color(0xFFA78BFA)             // Soft Violet
+val DarkOnSecondary = Color(0xFF0F172A)
+val DarkSecondaryContainer = Color(0xFF4C1D95)
+val DarkOnSecondaryContainer = Color(0xFFDDD6FE)
 
-val DarkTertiary = Color(0xFFE8B46E)
-val DarkOnTertiary = Color(0xFF3F2500)
+val DarkTertiary = Color(0xFFFBBF24)              // Warm Amber
+val DarkOnTertiary = Color(0xFF0F172A)
+val DarkTertiaryContainer = Color(0xFF78350F)
+val DarkOnTertiaryContainer = Color(0xFFFEF3C7)
 
-val DarkBackground = Color(0xFF0F1519)
-val DarkOnBackground = Color(0xFFE1E8EC)
-val DarkSurface = Color(0xFF272F3F)
-val DarkOnSurface = Color(0xFFE1E8EC)
-val DarkSurfaceVariant = Color(0xFF2A353C)
-val DarkOnSurfaceVariant = Color(0xFFBAC7CF)
-val DarkOutline = Color(0xFF8A9BA5)
+val DarkBackground = Color(0xFF0B0F17)            // Deep midnight slate
+val DarkOnBackground = Color(0xFFF8FAFC)
+val DarkSurface = Color(0xFF1E293B)               // Sleek dark slate cards
+val DarkOnSurface = Color(0xFFF8FAFC)
+val DarkSurfaceVariant = Color(0xFF1E293B)
+val DarkOnSurfaceVariant = Color(0xFF94A3B8)
+val DarkOutline = Color(0xFF334155)
 
-val DarkError = Color(0xFFF2B8B5)
-val DarkOnError = Color(0xFF601410)
+val DarkError = Color(0xFFF87171)
+val DarkOnError = Color(0xFF450A0A)

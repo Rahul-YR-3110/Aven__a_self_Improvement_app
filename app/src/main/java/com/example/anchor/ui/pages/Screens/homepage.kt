@@ -1,15 +1,19 @@
 package com.example.anchor.ui.pages.Screens
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocalBar
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.outlined.LocalBar
@@ -19,10 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +36,7 @@ import com.example.anchor.ui.viewmodels.HabitViewModel
 import com.example.anchor.ui.viewmodels.JournalViewModel
 import com.example.anchor.ui.viewmodels.WaterViewModel
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun HomeScreen(
@@ -48,179 +50,229 @@ fun HomeScreen(
     val journalUiState by journalViewModel.journalUiState.collectAsState()
     val habitUiState by habitViewModel.habitUiState.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 20.dp)
+                .padding(innerPadding)
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Greeting Header
             GreetingHeader(timestamp)
-            
-            WaterIntake(
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Hero Widget: Water Intake Progress Card
+            WaterIntakeCard(
                 currentGlass = waterUiState.currentGlasses,
                 totalGoal = waterUiState.totalGoalGlasses,
-                onIncrement = { waterViewModel.incrementWater()},
-                NavController = navController
+                onIncrement = { waterViewModel.incrementWater() },
+                navController = navController
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Bento Grid Row 1: Journal & App Blocker
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 JournalCard(
                     modifier = Modifier.weight(1f),
                     navController = navController,
                     entryCount = journalUiState.journalList.size
                 )
-                Spacer(modifier = Modifier.width(8.dp))
                 AppBlockerCard(
                     modifier = Modifier.weight(1f),
                     navController = navController
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HabitTrackerCard(
-                    navController = navController,
-                    habitCount = habitUiState.habits.size
-                )
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Bento Grid Row 2: Habit Tracker
+            HabitTrackerCard(
+                navController = navController,
+                habitCount = habitUiState.habits.size
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
 fun GreetingHeader(time: LocalDateTime) {
-    val greetingtime: String = when (time.hour) {
+    val greetingTime: String = when (time.hour) {
         in 5..11 -> "Morning"
         in 12..16 -> "Afternoon"
         in 17..20 -> "Evening"
         else -> "Night"
     }
-    Column(
-        modifier = Modifier
-            .padding(start = 15.dp, top = 15.dp)
-            .fillMaxWidth()
+    val dateFormatter = DateTimeFormatter.ofPattern("EEEE, MMM d")
+    val dateString = time.format(dateFormatter)
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "Good $greetingtime",
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            fontFamily = FontFamily.SansSerif,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Rahul",
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold,
-            fontSize = 34.sp,
-            fontFamily = FontFamily.SansSerif,
-        )
+        Column {
+            Text(
+                text = dateString.uppercase(),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                letterSpacing = 1.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Good $greetingTime,",
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = "Rahul",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
+        Surface(
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "R",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun WaterIntake(
+fun WaterIntakeCard(
     currentGlass: Int,
     totalGoal: Int,
     onIncrement: () -> Unit,
-    NavController: NavController
+    navController: NavController
 ) {
-    val glassFilled = Color(0xFF00B1FF)
-    Box(
+    Card(
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         modifier = Modifier
-            .padding(top = 20.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(size = 28.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .animateContentSize()
     ) {
-        Column {
+        Column(
+            modifier = Modifier.padding(20.dp)
+        ) {
+            // Header Row
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row() {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
                             imageVector = Icons.Outlined.WaterDrop,
                             contentDescription = null,
-                            tint = glassFilled,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Water intake",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.SemiBold
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
-                    IconButton(onClick = { NavController.navigate("WaterIntakeScreen")}) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
-                            modifier = Modifier.size(28.dp),
-                            tint = Color(0xFF914D1B)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Water Intake",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "$currentGlass of $totalGoal glasses consumed",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
+
+                IconButton(
+                    onClick = { navController.navigate("WaterIntakeScreen") }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Water Settings",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(18.dp))
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Glasses Icons Row + Increment Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    modifier = Modifier.padding(bottom = 10.dp, start = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
                 ) {
                     repeat(totalGoal) { index ->
                         GlassIcon(filled = index < currentGlass)
                         if (index != totalGoal - 1) {
-                            Spacer(modifier = Modifier.width(10.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                         }
                     }
                 }
-                IconButton(
+
+                Button(
                     onClick = onIncrement,
-                    modifier = Modifier
-                        .padding(bottom = 10.dp, end = 10.dp)
-                        .size(40.dp),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(0xFF914D1B)
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "add button",
-                        tint = Color(0xFFFFFFFF),
+                        contentDescription = "Add Glass",
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Glass",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -230,13 +282,11 @@ fun WaterIntake(
 
 @Composable
 private fun GlassIcon(filled: Boolean) {
-    val glassFilled = Color(0xFF00B1FF)
-    val glassEmpty = Color(0xFFEFC2AC)
     Icon(
         imageVector = if (filled) Icons.Filled.LocalBar else Icons.Outlined.LocalBar,
         contentDescription = if (filled) "Full Glass" else "Empty Glass",
-        tint = if (filled) glassFilled else glassEmpty,
-        modifier = Modifier.size(24.dp)
+        tint = if (filled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+        modifier = Modifier.size(22.dp)
     )
 }
 
@@ -246,40 +296,63 @@ fun JournalCard(
     navController: NavController,
     entryCount: Int
 ) {
-    Column(
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
             .clickable { navController.navigate("journals") }
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(18.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF3E3B5)),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.padding(18.dp)
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.MenuBook,
-                contentDescription = null,
-                tint = Color(0xFF7A5A1E),
-                modifier = Modifier.size(20.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Journal",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = "$entryCount entries",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp
             )
         }
-        Text(
-            text = "Journal",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "$entryCount entries",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 13.sp
-        )
     }
 }
 
@@ -288,40 +361,63 @@ fun AppBlockerCard(
     modifier: Modifier,
     navController: NavController
 ) {
-    Column(
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
             .clickable { navController.navigate("AppBlockerScreen") }
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(18.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF2B7A5)),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.padding(18.dp)
         ) {
-            Icon(
-                imageVector = Icons.Filled.Shield,
-                contentDescription = null,
-                tint = Color(0xFF7A2E1E),
-                modifier = Modifier.size(20.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Shield,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "App Blocker",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = "2 apps blocked",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp
             )
         }
-        Text(
-            text = "App blocker",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "2 apps blocked",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 13.sp
-        )
     }
 }
 
@@ -330,51 +426,80 @@ fun HabitTrackerCard(
     navController: NavController,
     habitCount: Int
 ) {
-    Column(
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         modifier = Modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .clickable { navController.navigate("HabitTracker") }
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(18.dp)
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF3E3B5)),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.tertiaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column {
+                    Text(
+                        text = "Habit Tracker",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "$habitCount active habits",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 13.sp
+                    )
+                }
+            }
+
             Icon(
-                imageVector = Icons.Filled.Menu,
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,
-                tint = Color(0xFF7A5A1E),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                 modifier = Modifier.size(20.dp)
             )
         }
-        Text(
-            text = "Habit Tracker",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = "$habitCount habits tracked",
-            color =MaterialTheme.colorScheme.onSurface,
-            fontSize = 13.sp
-        )
     }
 }
-@Composable
-fun Taskspagecard(){
 
-}
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun HomeScreenPreview() {
     AnchorTheme(darkTheme = true) {
+        val fakeNavController = rememberNavController()
+        HomeScreen(navController = fakeNavController)
+    }
+}
+
+@Preview(showSystemUi = true, name = "Light Mode")
+@Composable
+fun HomeScreenPreviewLight() {
+    AnchorTheme(darkTheme = false) {
         val fakeNavController = rememberNavController()
         HomeScreen(navController = fakeNavController)
     }

@@ -1,6 +1,5 @@
 package com.example.anchor
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,7 +19,7 @@ import com.example.anchor.notifications.NotificationHelper
 import com.example.anchor.ui.pages.Screens.HabitTrackerScreen
 import com.example.anchor.ui.pages.Screens.JournalScreen
 import com.example.anchor.ui.pages.Screens.AppBlockerScreen
-import com.example.anchor.ui.pages.Screens.WaterIntakeScreen
+import com.example.anchor.ui.pages.water.WaterIntakeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

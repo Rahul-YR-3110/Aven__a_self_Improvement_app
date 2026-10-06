@@ -1,4 +1,5 @@
 package com.example.anchor.ui.theme
+
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,8 +10,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-// 1. Define your custom dark color scheme mapping here
-
 private val LightColorScheme = lightColorScheme(
     primary = LightPrimary,
     onPrimary = LightOnPrimary,
@@ -18,8 +17,12 @@ private val LightColorScheme = lightColorScheme(
     onPrimaryContainer = LightOnPrimaryContainer,
     secondary = LightSecondary,
     onSecondary = LightOnSecondary,
+    secondaryContainer = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
     tertiary = LightTertiary,
     onTertiary = LightOnTertiary,
+    tertiaryContainer = LightTertiaryContainer,
+    onTertiaryContainer = LightOnTertiaryContainer,
     background = LightBackground,
     onBackground = LightOnBackground,
     surface = LightSurface,
@@ -38,8 +41,12 @@ private val DarkColorScheme = darkColorScheme(
     onPrimaryContainer = DarkOnPrimaryContainer,
     secondary = DarkSecondary,
     onSecondary = DarkOnSecondary,
+    secondaryContainer = DarkSecondaryContainer,
+    onSecondaryContainer = DarkOnSecondaryContainer,
     tertiary = DarkTertiary,
     onTertiary = DarkOnTertiary,
+    tertiaryContainer = DarkTertiaryContainer,
+    onTertiaryContainer = DarkOnTertiaryContainer,
     background = DarkBackground,
     onBackground = DarkOnBackground,
     surface = DarkSurface,
@@ -62,8 +69,6 @@ fun AnchorTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        // 3. Point these to your new custom configurations
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
