@@ -1,5 +1,6 @@
 package com.example.anchor
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
+import com.example.anchor.notifications.NotificationHelper
 import com.example.anchor.ui.pages.Screens.HabitTrackerScreen
 import com.example.anchor.ui.pages.Screens.JournalScreen
 import com.example.anchor.ui.pages.Screens.AppBlockerScreen
@@ -23,6 +25,7 @@ import com.example.anchor.ui.pages.Screens.WaterIntakeScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NotificationHelper.createChannel(this)
         enableEdgeToEdge()
         setContent {
             AnchorTheme {
