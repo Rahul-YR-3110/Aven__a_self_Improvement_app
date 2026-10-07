@@ -23,7 +23,8 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         OfflineAnchorRepository(
             AnchorDatabase.getDatabase(context).journalDao(),
             AnchorDatabase.getDatabase(context).habitDao(),
-            AnchorDatabase.getDatabase(context).waterIntakeDao()
+            AnchorDatabase.getDatabase(context).waterIntakeDao(),
+            AnchorDatabase.getDatabase(context).taskDao()
         )
     }
 }

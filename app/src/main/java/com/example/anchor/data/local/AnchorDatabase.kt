@@ -8,18 +8,21 @@ import androidx.room.TypeConverters
 import com.example.anchor.data.local.converters.Converters
 import com.example.anchor.data.local.daos.HabitDao
 import com.example.anchor.data.local.daos.JournalDao
+import com.example.anchor.data.local.daos.TaskDao
 import com.example.anchor.data.local.daos.WaterIntakeDao
 import com.example.anchor.data.local.entities.HabitEntity
 import com.example.anchor.data.local.entities.JournalEntity
+import com.example.anchor.data.local.entities.TaskEntitiy
 import com.example.anchor.data.local.entities.WaterIntakeEntity
 
 @Database(
     entities = [
         JournalEntity::class,
         HabitEntity::class,
-        WaterIntakeEntity::class
+        WaterIntakeEntity::class,
+        TaskEntitiy::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -28,6 +31,7 @@ abstract class AnchorDatabase : RoomDatabase() {
     abstract fun journalDao(): JournalDao
     abstract fun habitDao(): HabitDao
     abstract fun waterIntakeDao(): WaterIntakeDao
+    abstract fun taskDao(): TaskDao
 
     companion object {
         @Volatile

@@ -1,6 +1,5 @@
 package com.example.anchor.ui.pages.Onboarding
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
@@ -95,7 +94,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "Welcome to Anchor",
+                    text = "Welcome to Aven",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -126,7 +125,6 @@ fun LoginScreen(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Name Input Field
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
@@ -152,8 +150,6 @@ fun LoginScreen(
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
-
-                    // Privacy Guarantee Card
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),

@@ -19,7 +19,7 @@ val LightOnTertiary = Color(0xFFFFFFFF)
 val LightTertiaryContainer = Color(0xFFFEF3C7)    // Soft Amber Tint
 val LightOnTertiaryContainer = Color(0xFF92400E)  // Deep Warm Amber Text/Icon
 
-val LightBackground = Color(0xFFF8FAFC)           // Fresh crisp slate off-white
+val LightBackground = Color(0xFFF1FAFF)           // Fresh crisp slate off-white
 val LightOnBackground = Color(0xFF0F172A)         // Deep slate text for high contrast
 val LightSurface = Color(0xFFFFFFFF)              // Pure white cards for crisp surface contrast
 val LightOnSurface = Color(0xFF0F172A)

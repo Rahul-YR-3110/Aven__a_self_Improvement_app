@@ -22,6 +22,7 @@ import com.example.anchor.ui.pages.Screens.AppBlockerScreen
 import com.example.anchor.ui.pages.water.WaterIntakeScreen
 
 import com.example.anchor.ui.pages.Onboarding.LoginScreen
+import com.example.anchor.ui.pages.Screens.TasksTrackerScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         composable("HabitTracker") { HabitTrackerScreen() }
                         composable("AppBlockerScreen") { AppBlockerScreen(navController = navController) }
                         composable("WaterIntakeScreen") { WaterIntakeScreen() }
+                        composable(route="TasksTrackerScreen"){TasksTrackerScreen()}
                     }
             }
         }

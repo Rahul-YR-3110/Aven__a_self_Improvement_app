@@ -2,6 +2,7 @@ package com.example.anchor.data.repository
 
 import com.example.anchor.data.local.entities.HabitEntity
 import com.example.anchor.data.local.entities.JournalEntity
+import com.example.anchor.data.local.entities.TaskEntitiy
 import com.example.anchor.data.local.entities.WaterIntakeEntity
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -24,4 +25,10 @@ interface AnchorRepository {
     fun getWaterIntakeStream(date: LocalDate): Flow<WaterIntakeEntity?>
     suspend fun upsertWaterIntake(waterIntake: WaterIntakeEntity)
     suspend fun incrementStreak(habitId: String)
+
+    //Task
+    fun getAllTasks(): Flow<List<TaskEntitiy>>
+    suspend fun insertTask(task: TaskEntitiy)
+    suspend fun deleteTask(task: TaskEntitiy)
+
 }

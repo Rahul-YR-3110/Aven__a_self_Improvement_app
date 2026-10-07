@@ -78,7 +78,7 @@ fun AppBlockerScreen(
                             Text(
                                 text = "${apps.size} installed apps",
                                 fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.surface
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }

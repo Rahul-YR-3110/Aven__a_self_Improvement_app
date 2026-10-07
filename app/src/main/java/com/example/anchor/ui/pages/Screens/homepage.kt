@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,8 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.LocalBar
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.outlined.LocalBar
@@ -23,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +39,7 @@ import com.example.anchor.ui.AppViewModelProvider
 import com.example.anchor.ui.theme.AnchorTheme
 import com.example.anchor.ui.viewmodels.HabitViewModel
 import com.example.anchor.ui.viewmodels.JournalViewModel
+import com.example.anchor.ui.viewmodels.TaskViewModel
 import com.example.anchor.ui.viewmodels.WaterViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -45,12 +49,15 @@ fun HomeScreen(
     navController: NavController,
     waterViewModel: WaterViewModel = viewModel(factory = AppViewModelProvider.Factory),
     journalViewModel: JournalViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    habitViewModel: HabitViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    habitViewModel: HabitViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    taskViewModel: TaskViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val timestamp = LocalDateTime.now()
     val waterUiState by waterViewModel.waterUiState.collectAsState()
     val journalUiState by journalViewModel.journalUiState.collectAsState()
     val habitUiState by habitViewModel.habitUiState.collectAsState()
+    val taskUiState by taskViewModel.taskUiState.collectAsState()
+    val activeTaskCount = taskUiState.taskList.count { !it.isCompleted }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -102,8 +109,11 @@ fun HomeScreen(
                 navController = navController,
                 habitCount = habitUiState.habits.size
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            TasksCard(
+                navController = navController,
+                taskCount = activeTaskCount
+            )
         }
     }
 }
@@ -232,7 +242,7 @@ fun WaterIntakeCard(
                         imageVector = Icons.Default.Settings,
                         contentDescription = "Water Settings",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(25.dp)
                     )
                 }
             }
@@ -290,7 +300,7 @@ private fun GlassIcon(filled: Boolean) {
         imageVector = if (filled) Icons.Filled.LocalBar else Icons.Outlined.LocalBar,
         contentDescription = if (filled) "Full Glass" else "Empty Glass",
         tint = if (filled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-        modifier = Modifier.size(22.dp)
+        modifier = Modifier.size(18.dp)
     )
 }
 
@@ -456,8 +466,8 @@ fun HabitTrackerCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = null,
+                        imageVector = Icons.Filled.Repeat,
+                        contentDescription = "Habits",
                         tint = MaterialTheme.colorScheme.onTertiaryContainer,
                         modifier = Modifier.size(22.dp)
                     )
@@ -481,6 +491,68 @@ fun HabitTrackerCard(
                 }
             }
 
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun TasksCard(
+    navController: NavController,
+    taskCount: Int
+){
+    Card(
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .clickable { navController.navigate("TaskstrackerScreen") }
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()
+            .padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        )
+        {
+            Row(verticalAlignment = Alignment.CenterVertically){
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Checklist,
+                        contentDescription = "Tasks",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(14.dp))
+                Column{
+                    Text(
+                        text="Tasks"
+                        ,color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = if (taskCount == 1) "1 active task" else "$taskCount active tasks",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 13.sp
+                    )
+                }
+            }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,
