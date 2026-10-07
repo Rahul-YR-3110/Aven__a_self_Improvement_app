@@ -23,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.anchor.UserPreferences
 import com.example.anchor.ui.AppViewModelProvider
 import com.example.anchor.ui.theme.AnchorTheme
 import com.example.anchor.ui.viewmodels.HabitViewModel
@@ -108,6 +110,8 @@ fun HomeScreen(
 
 @Composable
 fun GreetingHeader(time: LocalDateTime) {
+    val context = LocalContext.current
+    val userName = remember { UserPreferences.getUserName(context) }
     val greetingTime: String = when (time.hour) {
         in 5..11 -> "Morning"
         in 12..16 -> "Afternoon"
@@ -138,7 +142,7 @@ fun GreetingHeader(time: LocalDateTime) {
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = "Rahul",
+                text = userName,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -155,7 +159,7 @@ fun GreetingHeader(time: LocalDateTime) {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Text(
-                    text = "R",
+                    text = userName.take(1).uppercase(),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer

@@ -37,10 +37,15 @@ import kotlin.math.roundToInt
 
 @Composable
 fun WaterIntakeScreen() {
-    var intervalMinutes by remember { mutableFloatStateOf(45f) }
-    var activeHoursRange by remember { mutableStateOf(8f..22f) } // Default 8:00 AM to 10:00 PM
-    var reminderSaved by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    // Restore saved settings or default
+    val savedStart = remember { ReminderSettings.startHour(context).toFloat() }
+    val savedEnd = remember { ReminderSettings.endHour(context).toFloat() }
+    val savedInterval = remember { ReminderSettings.intervalMinutes(context).toFloat() }
+
+    var intervalMinutes by remember { mutableFloatStateOf(savedInterval) }
+    var activeHoursRange by remember { mutableStateOf(savedStart..savedEnd) }
+    var reminderSaved by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -50,7 +55,7 @@ fun WaterIntakeScreen() {
             val endH = activeHoursRange.endInclusive.roundToInt()
             val intervalM = intervalMinutes.roundToInt()
 
-            ReminderSettings.save(context, startH, endH, intervalM)
+            ReminderSettings.saveinterval(context, startH, endH, intervalM)
             ReminderScheduler.start(context, intervalM)
             reminderSaved = true
             Toast.makeText(context, "Water reminder scheduled!", Toast.LENGTH_SHORT).show()
@@ -176,17 +181,22 @@ fun WaterIntakeScreen() {
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
+                    val intervals = listOf(15f, 30f, 45f, 60f, 75f, 90f, 120f)
+                    val currentMinutes = intervalMinutes.roundToInt()
+                    val currentIndex = intervals.indexOfFirst { it.roundToInt() == currentMinutes }
+                        .coerceAtLeast(0)
+                        .toFloat()
 
                     // Frequency Slider
-                    val currentMinutes = intervalMinutes.roundToInt()
                     Slider(
-                        value = intervalMinutes,
-                        onValueChange = {
-                            intervalMinutes = it
+                        value = currentIndex,
+                        onValueChange = { index ->
+                            val selectedIndex = index.roundToInt().coerceIn(0, intervals.lastIndex)
+                            intervalMinutes = intervals[selectedIndex]
                             reminderSaved = false
                         },
-                        valueRange = 15f..120f,
-                        steps = 6, // 15, 30, 45, 60, 75, 90, 105, 120
+                        valueRange = 0f..(intervals.size - 1).toFloat(),
+                        steps = intervals.size - 2, // 5 steps between 7 items
                         colors = SliderDefaults.colors(
                             thumbColor = MaterialTheme.colorScheme.primary,
                             activeTrackColor = MaterialTheme.colorScheme.primary,
@@ -217,7 +227,7 @@ fun WaterIntakeScreen() {
                     }
 
                     Spacer(modifier = Modifier.height(28.dp))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f))
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // SECTION 2: Active Hours Window Range
@@ -328,7 +338,7 @@ fun WaterIntakeScreen() {
                             ) == PackageManager.PERMISSION_GRANTED
 
                             if (alreadyAllowed) {
-                                ReminderSettings.save(context, startH, endH, intervalM)
+                                ReminderSettings.saveinterval(context, startH, endH, intervalM)
                                 ReminderScheduler.start(context, intervalM)
                                 reminderSaved = true
                                 Toast.makeText(context, "Water reminder scheduled!", Toast.LENGTH_SHORT).show()

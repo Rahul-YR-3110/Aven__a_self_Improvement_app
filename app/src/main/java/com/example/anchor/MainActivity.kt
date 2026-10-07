@@ -15,17 +15,20 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
-import com.example.anchor.notifications.NotificationHelper
+import com.example.anchor.universalFunctions.NotificationHelper
 import com.example.anchor.ui.pages.Screens.HabitTrackerScreen
 import com.example.anchor.ui.pages.Screens.JournalScreen
 import com.example.anchor.ui.pages.Screens.AppBlockerScreen
 import com.example.anchor.ui.pages.water.WaterIntakeScreen
+
+import com.example.anchor.ui.pages.Onboarding.LoginScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NotificationHelper.createChannel(this)
         enableEdgeToEdge()
+        val startDest = if (UserPreferences.isLoggedIn(this)) "home" else "login"
         setContent {
             AnchorTheme {
                 Surface(
@@ -33,7 +36,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = startDest) {
+                        composable("login") { LoginScreen(navController = navController) }
                         composable("home") { HomeScreen(navController) }
                         composable("journals") { JournalScreen() }
                         composable("HabitTracker") { HabitTrackerScreen() }

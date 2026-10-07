@@ -1,4 +1,4 @@
-package com.example.anchor.notifications
+package com.example.anchor.universalFunctions
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,11 +27,20 @@ object NotificationHelper {
         }
     }
     @SuppressLint("MissingPermission")
-    fun show(context: Context){
+    fun waterRminderNotification(context: Context){
+        createChannel(context)
+        val waterMessages = listOf(
+            "Have a sip of water" to "It's time to drink some water",
+            "Hydration check 💧" to "Your body will thank you for a glass of water",
+            "Water break!" to "Pause for a moment and take a few sips",
+            "Stay hydrated" to "A small glass now keeps the tiredness away",
+            "Quick reminder" to "Your water bottle is waiting for you"
+        )
+        val (title, message) = waterMessages.random()
         val notification = NotificationCompat.Builder(context, Channel_ID)
             .setSmallIcon(R.drawable.waterdropnotification)
-            .setContentTitle("Have a sip of water")
-            .setContentText("It's time to drink some water")
+            .setContentTitle(title)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
         NotificationManagerCompat.from(context).notify(1, notification)

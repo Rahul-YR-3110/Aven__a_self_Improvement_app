@@ -22,7 +22,6 @@ object ReminderScheduler {
             workRequest
         )
     }
-
     fun stop(context: Context) {
         WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
     }

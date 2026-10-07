@@ -3,7 +3,7 @@ package com.example.anchor
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.anchor.notifications.NotificationHelper
+import com.example.anchor.universalFunctions.NotificationHelper
 import java.util.Calendar
 
 class waterReminderworker(
@@ -21,7 +21,7 @@ class waterReminderworker(
         val allowed = NotificationHelper.hasPermission(applicationContext)
 
         if (insideRange && allowed) {
-            NotificationHelper.show(applicationContext)
+            NotificationHelper.waterRminderNotification(applicationContext)
         }
 
         return Result.success()
