@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,8 +34,10 @@ fun TasksTrackerScreen(
 ) {
     val uiState by viewModel.taskUiState.collectAsState()
     var showAddTask by remember { mutableStateOf(false) }
+    var isCompletedExpanded by remember { mutableStateOf(false) }
 
-    val activeCount = uiState.taskList.count { !it.isCompleted }
+    val activeTasks = remember(uiState.taskList) { uiState.taskList.filter { !it.isCompleted } }
+    val completedTasks = remember(uiState.taskList) { uiState.taskList.filter { it.isCompleted } }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -74,7 +78,7 @@ fun TasksTrackerScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = if (activeCount == 1) "1 Active Task" else "$activeCount Active Tasks",
+                text = if (activeTasks.size == 1) "1 Active Task" else "${activeTasks.size} Active Tasks",
                 fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 modifier = Modifier.padding(start = 12.dp, bottom = 16.dp)
@@ -95,12 +99,78 @@ fun TasksTrackerScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
-                    items(uiState.taskList, key = { it.id }) { task ->
-                        TaskEntryCard(
-                            task = task,
-                            onToggle = { viewModel.toggleTaskCompletion(task) },
-                            onDelete = { viewModel.deleteTask(task) }
-                        )
+                    // Active Tasks Section
+                    if (activeTasks.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = "Active Tasks",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp)
+                            )
+                        }
+                        items(activeTasks, key = { it.id }) { task ->
+                            TaskEntryCard(
+                                task = task,
+                                onToggle = { viewModel.toggleTaskCompletion(task) },
+                                onDelete = { viewModel.deleteTask(task) }
+                            )
+                        }
+                    } else if (completedTasks.isNotEmpty()) {
+                        item {
+                            Card(
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "All caught up! No active tasks.",
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    // Completed Tasks Collapsible Section
+                    if (completedTasks.isNotEmpty()) {
+                        item {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { isCompletedExpanded = !isCompletedExpanded }
+                                    .padding(vertical = 8.dp, horizontal = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Completed (${completedTasks.size})",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                                )
+                                Icon(
+                                    imageVector = if (isCompletedExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                    contentDescription = if (isCompletedExpanded) "Collapse completed tasks" else "Expand completed tasks",
+                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+
+                        if (isCompletedExpanded) {
+                            items(completedTasks, key = { it.id }) { task ->
+                                TaskEntryCard(
+                                    task = task,
+                                    onToggle = { viewModel.toggleTaskCompletion(task) },
+                                    onDelete = { viewModel.deleteTask(task) }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -258,10 +328,6 @@ fun AddTaskBottomSheet(
 @Preview(showSystemUi = true)
 fun TasksTrackerScreenPreview() {
     AnchorTheme(darkTheme = true) {
-        TaskEntryCard(
-            task = TaskEntitiy(id = "1", title = "Complete project task", isCompleted = false),
-            onToggle = {},
-            onDelete = {}
-        )
+        TasksTrackerScreen()
     }
 }
