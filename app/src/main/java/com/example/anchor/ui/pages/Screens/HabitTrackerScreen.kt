@@ -1,7 +1,6 @@
 package com.example.anchor.ui.pages.Screens
 
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,28 +20,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.anchor.UserPreferences
+import androidx.navigation.NavController
 import com.example.anchor.data.local.entities.HabitEntity
 import com.example.anchor.ui.AppViewModelProvider
 import com.example.anchor.ui.theme.AnchorTheme
 import com.example.anchor.ui.viewmodels.HabitViewModel
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitTrackerScreen(
+    navController: NavController? = null,
     viewModel: HabitViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.habitUiState.collectAsState()
     var showAddHabit by remember { mutableStateOf(false) }
     var habitToDelete by remember { mutableStateOf<HabitEntity?>(null) }
-    var userName= UserPreferences.getUserName(LocalContext.current)
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -82,23 +81,7 @@ fun HabitTrackerScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            text = userName.take(1).uppercase(),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
+                UserFirstletter(navController)
             }
             HorizontalDivider(modifier=Modifier.padding(top=5.dp))
 
@@ -340,7 +323,7 @@ fun HabitEntryCard(
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Check,
+                        imageVector = Icons.Default.Add,
                         contentDescription = "Complete Habit / Increment Streak",
                         modifier = Modifier.size(20.dp)
                     )
@@ -473,9 +456,9 @@ fun AddHabitBottomSheet(
 }
 
 @Composable
-@Preview(showSystemUi = true,)
+@Preview
 fun HabitScreenPreview() {
     AnchorTheme {
-        HabitTrackerScreen()
+        HabitEntryCard(habit = HabitEntity(id="1", title = "Morning Yoga", createdAt = LocalDateTime.now()), onDelete = {}, onIncrement ={})
     }
 }

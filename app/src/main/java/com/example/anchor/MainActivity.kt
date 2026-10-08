@@ -14,6 +14,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.anchor.universalFunctions.NotificationHelper
 import com.example.anchor.ui.pages.Screens.HabitTrackerScreen
@@ -22,6 +26,7 @@ import com.example.anchor.ui.pages.Screens.AppBlockerScreen
 import com.example.anchor.ui.pages.water.WaterIntakeScreen
 
 import com.example.anchor.ui.pages.Onboarding.LoginScreen
+import com.example.anchor.ui.pages.Screens.ProfileScreen
 import com.example.anchor.ui.pages.Screens.TasksTrackerScreen
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +36,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val startDest = if (UserPreferences.isLoggedIn(this)) "home" else "login"
         setContent {
-            AnchorTheme {
+            var isDark by remember { mutableStateOf(true) }
+            AnchorTheme(darkTheme = isDark) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -40,11 +46,12 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = startDest) {
                         composable("login") { LoginScreen(navController = navController) }
                         composable("home") { HomeScreen(navController) }
-                        composable("journals") { JournalScreen() }
-                        composable("HabitTracker") { HabitTrackerScreen() }
+                        composable("journals") { JournalScreen(navController = navController) }
+                        composable("HabitTracker") { HabitTrackerScreen(navController = navController) }
                         composable("AppBlockerScreen") { AppBlockerScreen(navController = navController) }
                         composable("WaterIntakeScreen") { WaterIntakeScreen() }
-                        composable(route="TasksTrackerScreen"){TasksTrackerScreen()}
+                        composable(route="TasksTrackerScreen"){ TasksTrackerScreen(navController = navController) }
+                        composable(route="ProfilePage"){ ProfileScreen(isDark = isDark, themeChange = { isDark = it },navController = navController) }
                     }
             }
         }

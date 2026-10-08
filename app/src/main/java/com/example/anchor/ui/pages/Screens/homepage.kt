@@ -72,7 +72,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Greeting Header
-            GreetingHeader(timestamp)
+            GreetingHeader(timestamp, navController)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -119,7 +119,36 @@ fun HomeScreen(
 }
 
 @Composable
-fun GreetingHeader(time: LocalDateTime) {
+fun UserFirstletter(navController: NavController? = null) {
+    val userName = UserPreferences.getUserName(LocalContext.current)
+    Surface(
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .then(
+                if (navController != null) {
+                    Modifier.clickable { navController.navigate("ProfilePage") }
+                } else Modifier
+            )
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = userName.take(1).uppercase(),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+    }
+}
+
+@Composable
+fun GreetingHeader(time: LocalDateTime, navController: NavController) {
     val context = LocalContext.current
     val userName = remember { UserPreferences.getUserName(context) }
     val greetingTime: String = when (time.hour) {
@@ -158,24 +187,7 @@ fun GreetingHeader(time: LocalDateTime) {
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
-
-        Surface(
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier.size(48.dp)
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = userName.take(1).uppercase(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }
+        UserFirstletter(navController)
     }
 }
 
@@ -514,7 +526,7 @@ fun TasksCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .clickable { navController.navigate("TaskstrackerScreen") }
+            .clickable { navController.navigate("TasksTrackerScreen") }
     ) {
         Row(modifier = Modifier.fillMaxWidth()
             .padding(18.dp),

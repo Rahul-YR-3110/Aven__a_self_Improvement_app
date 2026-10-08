@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.anchor.UserPreferences
 import com.example.anchor.data.local.entities.TaskEntitiy
 import com.example.anchor.ui.AppViewModelProvider
@@ -40,13 +41,13 @@ import com.example.anchor.ui.viewmodels.TaskViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksTrackerScreen(
+    navController: NavController? = null,
     viewModel: TaskViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.taskUiState.collectAsState()
     var showAddTask by remember { mutableStateOf(false) }
     var isCompletedExpanded by remember { mutableStateOf(false) }
     var taskToDelete by remember { mutableStateOf<TaskEntitiy?>(null) }
-    var userName= UserPreferences.getUserName(LocalContext.current)
     val activeTasks = remember(uiState.taskList) { uiState.taskList.filter { !it.isCompleted } }
     val completedTasks = remember(uiState.taskList) { uiState.taskList.filter { it.isCompleted } }
     val totalTasks = uiState.taskList.size
@@ -90,23 +91,7 @@ fun TasksTrackerScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            text = userName.take(1).uppercase(),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
+                UserFirstletter(navController)
             }
             HorizontalDivider(modifier=Modifier.padding(top = 5.dp))
             Spacer(modifier = Modifier.height(16.dp))

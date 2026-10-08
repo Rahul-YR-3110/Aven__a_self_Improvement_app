@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.anchor.UserPreferences
 import com.example.anchor.data.local.entities.JournalEntity
 import com.example.anchor.data.local.entities.Mood
@@ -72,12 +73,12 @@ fun LocalDateTime.toRelativeFormattedString(): String {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalScreen(
+    navController: NavController? = null,
     viewModel: JournalViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.journalUiState.collectAsState()
     var showAddSheet by remember { mutableStateOf(false) }
     var entryToDelete by remember { mutableStateOf<JournalEntity?>(null) }
-    var userName= UserPreferences.getUserName(LocalContext.current)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
@@ -118,23 +119,7 @@ fun JournalScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(start = 10.dp)
                 )
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            text = userName.take(1).uppercase(),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
+                UserFirstletter(navController)
             }
             HorizontalDivider(modifier = Modifier.padding(top = 5.dp))
             Spacer(modifier = Modifier.height(16.dp))
