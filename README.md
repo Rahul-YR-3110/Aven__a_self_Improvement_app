@@ -149,7 +149,7 @@ com.example.anchor
    ```
 
 4. **Run on Device**:
-   Select your target emulator or physical device and click **Run (Shift + F10)**.
+   Select your target emulator or physical device by enabling USB debugging and click **Run (Shift + F10)**.
 
 ---
 
@@ -167,7 +167,7 @@ com.example.anchor
 
 ## 👤 Developer Profile
 
-Developed by a **Computer Science Student** passionate about native Android engineering, clean code architecture, Jetpack Compose, and building user-centric, privacy-conscious applications.
+Developed by a **Rahul Rajasekhar** **Computer Science Student** passionate about native Android engineering, clean code architecture, Jetpack Compose, and building user-centric, privacy-conscious applications.
 
 ---
 
