@@ -8,12 +8,10 @@ import com.example.anchor.AnchorApplication
 import com.example.anchor.data.local.entities.HabitEntity
 import com.example.anchor.data.local.entities.JournalEntity
 import com.example.anchor.data.local.entities.TaskEntitiy
-import com.example.anchor.data.local.entities.WaterIntakeEntity
 import com.example.anchor.data.repository.AnchorRepository
 import com.example.anchor.ui.viewmodels.HabitViewModel
 import com.example.anchor.ui.viewmodels.JournalViewModel
 import com.example.anchor.ui.viewmodels.TaskViewModel
-import com.example.anchor.ui.viewmodels.WaterViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
@@ -31,10 +29,6 @@ object AppViewModelProvider {
         initializer {
             HabitViewModel(anchorApplication()?.container?.anchorRepository ?: PreviewAnchorRepository)
         }
-        // Initializer for WaterViewModel
-        initializer {
-            WaterViewModel(anchorApplication()?.container?.anchorRepository ?: PreviewAnchorRepository)
-        }
         // Initializer for TaskViewModel
         initializer {
             TaskViewModel(anchorApplication()?.container?.anchorRepository ?: PreviewAnchorRepository)
@@ -51,8 +45,6 @@ private object PreviewAnchorRepository : AnchorRepository {
     override suspend fun insertHabit(habit: HabitEntity) {}
     override suspend fun deleteHabit(habit: HabitEntity) {}
 
-    override fun getWaterIntakeStream(date: LocalDate): Flow<WaterIntakeEntity?> = flowOf(null)
-    override suspend fun upsertWaterIntake(waterIntake: WaterIntakeEntity) {}
     override suspend fun incrementStreak(habitId: String) {}
 
     override fun getAllTasks(): Flow<List<TaskEntitiy>> = flowOf(emptyList())

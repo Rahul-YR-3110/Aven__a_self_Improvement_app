@@ -201,7 +201,7 @@ fun AppBlockerScreenPreview() {
     AnchorTheme(
         darkTheme = true
     ) {
-        AppItem(AppInfo("WhatsApp", "com.whatsapp", ColorDrawable(Color.BLUE)))
+        AppBlockerScreen()
     }
 }
 

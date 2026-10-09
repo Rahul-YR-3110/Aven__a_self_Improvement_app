@@ -28,6 +28,7 @@ import com.example.anchor.ui.pages.water.WaterIntakeScreen
 import com.example.anchor.ui.pages.Onboarding.LoginScreen
 import com.example.anchor.ui.pages.Screens.ProfileScreen
 import com.example.anchor.ui.pages.Screens.TasksTrackerScreen
+import com.example.anchor.ui.pages.Screens.UsageAccessScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +37,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val startDest = if (UserPreferences.isLoggedIn(this)) "home" else "login"
         setContent {
-            var isDark by remember { mutableStateOf(true) }
+            var isDark by remember { mutableStateOf(true)}
+            val usageaccess = UserPreferences.getUsageAccessGranted(this)
             AnchorTheme(darkTheme = isDark) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -45,13 +47,14 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = startDest) {
                         composable("login") { LoginScreen(navController = navController) }
-                        composable("home") { HomeScreen(navController) }
+                        composable("home") { HomeScreen(navController, usageaccess) }
                         composable("journals") { JournalScreen(navController = navController) }
                         composable("HabitTracker") { HabitTrackerScreen(navController = navController) }
                         composable("AppBlockerScreen") { AppBlockerScreen(navController = navController) }
                         composable("WaterIntakeScreen") { WaterIntakeScreen() }
-                        composable(route="TasksTrackerScreen"){ TasksTrackerScreen(navController = navController) }
-                        composable(route="ProfilePage"){ ProfileScreen(isDark = isDark, themeChange = { isDark = it },navController = navController) }
+                        composable("TasksTrackerScreen"){ TasksTrackerScreen(navController = navController) }
+                        composable("ProfilePage"){ ProfileScreen(isDark = isDark, themeChange = { isDark = it },navController = navController) }
+                        composable("UsageAccessScreen") { UsageAccessScreen(navController = navController) }
                     }
             }
         }
@@ -59,12 +62,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun HomeScreenPreview() {
-    AnchorTheme(darkTheme=true) {
-        val fakeNavController = rememberNavController()
-        HomeScreen(navController = fakeNavController)
-    }
-}
 

@@ -25,7 +25,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,25 +34,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.anchor.UserPreferences
+import com.example.anchor.checkUsageAccessPermission
 import com.example.anchor.ui.AppViewModelProvider
 import com.example.anchor.ui.theme.AnchorTheme
 import com.example.anchor.ui.viewmodels.HabitViewModel
 import com.example.anchor.ui.viewmodels.JournalViewModel
 import com.example.anchor.ui.viewmodels.TaskViewModel
-import com.example.anchor.ui.viewmodels.WaterViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    waterViewModel: WaterViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    usageaccess:Boolean,
     journalViewModel: JournalViewModel = viewModel(factory = AppViewModelProvider.Factory),
     habitViewModel: HabitViewModel = viewModel(factory = AppViewModelProvider.Factory),
     taskViewModel: TaskViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val timestamp = LocalDateTime.now()
-    val waterUiState by waterViewModel.waterUiState.collectAsState()
     val journalUiState by journalViewModel.journalUiState.collectAsState()
     val habitUiState by habitViewModel.habitUiState.collectAsState()
     val taskUiState by taskViewModel.taskUiState.collectAsState()
@@ -75,12 +73,7 @@ fun HomeScreen(
             GreetingHeader(timestamp, navController)
 
             Spacer(modifier = Modifier.height(24.dp))
-
-            // Hero Widget: Water Intake Progress Card
             WaterIntakeCard(
-                currentGlass = waterUiState.currentGlasses,
-                totalGoal = waterUiState.totalGoalGlasses,
-                onIncrement = { waterViewModel.incrementWater() },
                 navController = navController
             )
 
@@ -98,7 +91,8 @@ fun HomeScreen(
                 )
                 AppBlockerCard(
                     modifier = Modifier.weight(1f),
-                    navController = navController
+                    navController = navController,
+                    usageAccess= usageaccess
                 )
             }
 
@@ -193,11 +187,11 @@ fun GreetingHeader(time: LocalDateTime, navController: NavController) {
 
 @Composable
 fun WaterIntakeCard(
-    currentGlass: Int,
-    totalGoal: Int,
-    onIncrement: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    totalGoal: Int = 8
 ) {
+    var currentGlass by remember { mutableIntStateOf(0) }
+
     Card(
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
@@ -281,7 +275,13 @@ fun WaterIntakeCard(
                 }
 
                 Button(
-                    onClick = onIncrement,
+                    onClick = {
+                        if (currentGlass < totalGoal) {
+                            currentGlass++
+                        } else {
+                            currentGlass = 0
+                        }
+                    },
                     shape = RoundedCornerShape(16.dp),
                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -385,8 +385,10 @@ fun JournalCard(
 @Composable
 fun AppBlockerCard(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    usageAccess: Boolean
 ) {
+    val context = LocalContext.current
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
@@ -394,7 +396,13 @@ fun AppBlockerCard(
         ),
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
-            .clickable { navController.navigate("AppBlockerScreen") }
+            .clickable {
+                if (checkUsageAccessPermission(context)) {
+                    navController.navigate("AppBlockerScreen")
+                } else {
+                    navController.navigate("UsageAccessScreen")
+                }
+            }
     ) {
         Column(
             modifier = Modifier.padding(18.dp)
@@ -580,7 +588,7 @@ fun TasksCard(
 fun HomeScreenPreview() {
     AnchorTheme(darkTheme = true) {
         val fakeNavController = rememberNavController()
-        HomeScreen(navController = fakeNavController)
+        HomeScreen(navController = fakeNavController, usageaccess = false)
     }
 }
 
@@ -589,6 +597,6 @@ fun HomeScreenPreview() {
 fun HomeScreenPreviewLight() {
     AnchorTheme(darkTheme = false) {
         val fakeNavController = rememberNavController()
-        HomeScreen(navController = fakeNavController)
+        HomeScreen(navController = fakeNavController,false)
     }
 }

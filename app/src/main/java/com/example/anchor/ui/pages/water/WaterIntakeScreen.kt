@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material3.*
@@ -368,6 +369,36 @@ fun WaterIntakeScreen() {
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
+                    }
+                    Spacer(modifier=Modifier.height(4.dp))
+                    Button(
+                        onClick = {
+                            ReminderScheduler.stop(context)
+                            if (reminderSaved){
+                                Toast.makeText(context, "Water reminder Cancelled", Toast.LENGTH_SHORT).show()
+                            }
+                            reminderSaved = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        )
+                    ){
+                            Icon(
+                                imageVector = Icons.Default.NotificationsOff,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Cancel Reminder",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                     }
                 }
             }
