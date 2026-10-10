@@ -3,6 +3,7 @@ package com.example.anchor.ui.pages.Screens
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -145,11 +147,30 @@ fun UserFirstletter(navController: NavController? = null) {
 fun GreetingHeader(time: LocalDateTime, navController: NavController) {
     val context = LocalContext.current
     val userName = remember { UserPreferences.getUserName(context) }
+    val morningGreetings = listOf(
+        "A fresh start awaits,",
+        "Today is full of possibilities,",
+        "Take on today gently,",
+        "A new day, a new breath,",
+        "Breathe in a new beginning,",
+        "Today, choose peace,",
+        "Make today yours,",
+        "Good Morning"
+    )
+    val nightGreetings = listOf(
+        "Let the day slow down,",
+        "It's time to find your calm,",
+        "Breathe out the stress,",
+        "Let your mind settle,",
+        "Slow down and just breathe,",
+        "End the day with kindness,",
+        "Find your quiet moment,"
+    )
     val greetingTime: String = when (time.hour) {
-        in 5..11 -> "Morning"
-        in 12..16 -> "Afternoon"
-        in 17..20 -> "Evening"
-        else -> "Night"
+        in 5..11 -> morningGreetings.random()
+        in 12..16 -> "Good Afternoon"
+        in 17..20 -> "Good Evening"
+        else -> nightGreetings.random()
     }
     val dateFormatter = DateTimeFormatter.ofPattern("EEEE, MMM d")
     val dateString = time.format(dateFormatter)
@@ -169,7 +190,7 @@ fun GreetingHeader(time: LocalDateTime, navController: NavController) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Good $greetingTime,",
+                text = "$greetingTime",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -396,12 +417,19 @@ fun AppBlockerCard(
         ),
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
-            .clickable {
-                if (checkUsageAccessPermission(context)) {
-                    navController.navigate("AppBlockerScreen")
-                } else {
-                    navController.navigate("UsageAccessScreen")
-                }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onDoubleTap = {
+                        navController.navigate("BreathingScreen")
+                    },
+                    onTap={
+                        if (checkUsageAccessPermission(context)) {
+                            navController.navigate("AppBlockerScreen")
+                        } else {
+                            navController.navigate("UsageAccessScreen")
+                        }
+                    }
+                )
             }
     ) {
         Column(

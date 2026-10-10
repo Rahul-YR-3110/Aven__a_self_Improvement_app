@@ -45,7 +45,6 @@ fun BreathingScreen() {
             phase = BreathingPhase.EXHALE
             delay(5000)
             phase=BreathingPhase.FINISH
-
     }
 
     Scaffold(
@@ -60,7 +59,8 @@ fun BreathingScreen() {
             val fullScreenHeight = maxHeight
             val fullScreenwidith=maxWidth
             val minHeight = 70.dp
-            val animatedcornerradius by animateDpAsState(
+
+            val animatedCornerRadius by animateDpAsState(
                 if (phase==BreathingPhase.INHALE) 0.dp else fullScreenwidith/3.5f,
                 animationSpec = tween( durationMillis = 5000, easing= EaseIn),
                 label="BreathingBoxCornerRadius"
@@ -80,7 +80,7 @@ fun BreathingScreen() {
                     .requiredHeight(animatedHeight)
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(topStart = animatedcornerradius, topEnd =animatedcornerradius)
+                            shape = RoundedCornerShape(topStart = animatedCornerRadius, topEnd =animatedCornerRadius)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -88,7 +88,7 @@ fun BreathingScreen() {
                     text = if (phase == BreathingPhase.INHALE) "Inhale..."
                         else if (phase == BreathingPhase.EXHALE) "Exhale..."
                         else "Finish",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )

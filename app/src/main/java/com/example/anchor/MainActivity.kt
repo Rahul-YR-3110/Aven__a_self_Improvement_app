@@ -26,6 +26,7 @@ import com.example.anchor.ui.pages.Screens.AppBlockerScreen
 import com.example.anchor.ui.pages.water.WaterIntakeScreen
 
 import com.example.anchor.ui.pages.Onboarding.LoginScreen
+import com.example.anchor.ui.pages.Screens.BreathingScreen
 import com.example.anchor.ui.pages.Screens.ProfileScreen
 import com.example.anchor.ui.pages.Screens.TasksTrackerScreen
 import com.example.anchor.ui.pages.Screens.UsageAccessScreen
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
                         composable("TasksTrackerScreen"){ TasksTrackerScreen(navController = navController) }
                         composable("ProfilePage"){ ProfileScreen(isDark = isDark, themeChange = { isDark = it },navController = navController) }
                         composable("UsageAccessScreen") { UsageAccessScreen(navController = navController) }
+                        composable("BreathingScreen"){BreathingScreen()}
                     }
             }
         }

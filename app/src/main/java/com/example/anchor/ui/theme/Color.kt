@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 // Modern, crisp, vibrant light palette inspired by clean aesthetic interfaces
 val LightPrimary = Color(0xFF2563EB)              // Vibrant Electric Blue
 val LightOnPrimary = Color(0xFFFFFFFF)
-val LightPrimaryContainer = Color(0xFFDBEAFE)     // Soft Sky Blue Tint
+val LightPrimaryContainer = Color(0xFF71B0FD)     // Soft Sky Blue Tint
 val LightOnPrimaryContainer = Color(0xFF1E40AF)   // Deep Royal Blue Text/Icon
 
 val LightSecondary = Color(0xFF7C3AED)            // Electric Violet/Indigo accent
