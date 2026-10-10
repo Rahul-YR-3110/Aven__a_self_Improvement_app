@@ -176,8 +176,6 @@ fun TasksTrackerScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Active Tasks Counter Text
             Text(
                 text = if (activeTasks.size == 1) "1 Active Task" else "${activeTasks.size} Active Tasks",
                 fontSize = 15.sp,
@@ -185,8 +183,6 @@ fun TasksTrackerScreen(
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 modifier = Modifier.padding(start = 4.dp, bottom = 12.dp)
             )
-
-            // Content List
             if (uiState.taskList.isEmpty()) {
                 Box(
                     modifier = Modifier
@@ -233,7 +229,6 @@ fun TasksTrackerScreen(
                     contentPadding = PaddingValues(bottom = 90.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    // Active Tasks Section
                     if (activeTasks.isNotEmpty()) {
                         item {
                             Text(
@@ -270,8 +265,6 @@ fun TasksTrackerScreen(
                             }
                         }
                     }
-
-                    // Completed Tasks Collapsible Section
                     if (completedTasks.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.height(8.dp))
@@ -309,8 +302,6 @@ fun TasksTrackerScreen(
                     }
                 }
             }
-
-            // Delete Confirmation Dialog
             taskToDelete?.let { task ->
                 AlertDialog(
                     onDismissRequest = { taskToDelete = null },
